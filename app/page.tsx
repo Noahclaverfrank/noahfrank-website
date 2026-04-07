@@ -1,10 +1,12 @@
 import Nav from '@/components/Nav';
 import Hero from '@/components/Hero';
 import LenisProvider from '@/components/LenisProvider';
+import GrainTexture from '@/components/GrainTexture';
 
 export default function Home() {
   return (
     <>
+      <GrainTexture />
       <LenisProvider />
       <Nav />
       <main id="top">
