@@ -7,7 +7,8 @@ export default function LenisProvider() {
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
-    const lenis = new Lenis({ autoRaf: true });
+    // lerp 0.08 = smooth but not sluggish
+    const lenis = new Lenis({ autoRaf: true, lerp: 0.08, smoothWheel: true });
     return () => lenis.destroy();
   }, []);
 
