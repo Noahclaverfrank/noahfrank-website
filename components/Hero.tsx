@@ -48,8 +48,8 @@ export default function Hero() {
         {/* Name */}
         <h1
           id="hero-headline"
-          className="hero-name font-bold leading-[0.95] tracking-[-0.03em] text-text"
-          style={{ fontSize: 'clamp(72px, 12vw, 160px)' }}
+          className="hero-name font-light leading-[0.92] text-text"
+          style={{ fontSize: 'clamp(80px, 13vw, 180px)', fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 300, letterSpacing: '-0.01em' }}
         >
           Noah<br />Frank
         </h1>
