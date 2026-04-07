@@ -45,13 +45,16 @@ export default function Hero() {
     return () => window.removeEventListener('scroll', update);
   }, []);
 
-  // Letter scramble on load
+  // Letter scramble on load + repeat every 17s
   useEffect(() => {
     const el = nameRef.current;
     if (!el) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
-    setTimeout(() => scramble('Noah\nFrank', el, 900), 200);
+    const run = () => scramble('Noah\nFrank', el, 900);
+    setTimeout(run, 200);
+    const interval = setInterval(run, 17000);
+    return () => clearInterval(interval);
   }, []);
 
   // Animated line
@@ -76,26 +79,6 @@ export default function Hero() {
       <div aria-hidden className="pointer-events-none absolute right-0 top-0 h-[80vh] w-[60vw] opacity-40"
         style={{ background: 'radial-gradient(ellipse at 80% 20%, rgba(200,82,42,0.07) 0%, transparent 60%)' }} />
 
-      {/* Ghost text — "NF" large in background */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-end pr-8 md:pr-16 select-none overflow-hidden"
-        style={{ zIndex: 0 }}
-      >
-        <span
-          className="font-light text-text"
-          style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: 'clamp(260px, 40vw, 520px)',
-            lineHeight: 1,
-            opacity: 0.04,
-            letterSpacing: '-0.04em',
-            userSelect: 'none',
-          }}
-        >
-          NF
-        </span>
-      </div>
 
       {/* Main content */}
       <div
@@ -110,13 +93,13 @@ export default function Hero() {
         <h1
           id="hero-headline"
           ref={nameRef}
-          className="hero-name font-light text-text whitespace-pre-line"
+          className="hero-name font-bold text-text whitespace-pre-line"
           style={{
-            fontSize: 'clamp(80px, 13vw, 180px)',
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontWeight: 300,
-            lineHeight: 0.92,
-            letterSpacing: '-0.01em',
+            fontSize: 'clamp(72px, 11vw, 148px)',
+            fontFamily: "'Geist', system-ui, sans-serif",
+            fontWeight: 700,
+            lineHeight: 0.95,
+            letterSpacing: '-0.03em',
           }}
         >
           Noah{'\n'}Frank

@@ -6,8 +6,7 @@ import GrainTexture from '@/components/GrainTexture';
 export default function Home() {
   return (
     <>
-      <GrainTexture />
-      <LenisProvider />
+<LenisProvider />
       <Nav />
       <main id="top">
         <Hero />
