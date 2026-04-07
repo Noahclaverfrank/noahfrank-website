@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* -- Design Tokens -- */
+@theme {
+  --color-background:       #FAF8F5;
+  --color-surface:          #F0EBE3;
+  --color-surface-elevated: #E8E3DA;
+  --color-border:           #DDD8D0;
+  --color-text:             #1A1614;
+  --color-text-secondary:   #6E6259;
+  --color-text-tertiary:    #A39690;
+  --color-accent:           #C8522A;
+  --color-accent-hover:     #A8411E;
+
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+}
+
+/* -- Self-hosted Geist -- */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/GeistVariableVF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -- Base -- */
+html, body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* -- Reduced Motion -- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
