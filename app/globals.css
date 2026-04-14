@@ -2,7 +2,7 @@
 
 /* -- Design Tokens -- */
 @theme {
-  --color-background:       #FAF8F5;
+  --color-background:       #EDEAE3;
   --color-surface:          #F0EBE3;
   --color-surface-elevated: #E8E3DA;
   --color-border:           #DDD8D0;
@@ -23,9 +23,6 @@
   font-style: normal;
   font-display: swap;
 }
-
-/* -- Cormorant Garamond (Google Fonts fallback via CSS import) -- */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
 /* -- Base -- */
 html, body {
