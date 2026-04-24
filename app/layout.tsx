@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import TerminalIntro from '@/components/TerminalIntro';
+import AskOverlay from '@/components/AskOverlay';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="antialiased">
-      <body>
-        <TerminalIntro />
+<body>
         {children}
+        <AskOverlay />
       </body>
     </html>
   );

@@ -9,7 +9,34 @@ export default function Nav() {
   const logoFRef    = useRef<HTMLSpanElement>(null);
   const logoSepRef  = useRef<HTMLSpanElement>(null);
   const nfMonoRef   = useRef<HTMLSpanElement>(null);
+  const wordmarkRef = useRef<HTMLAnchorElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Flip wordmark to cream when the Work box covers the viewport
+  useEffect(() => {
+    const wordmark = wordmarkRef.current;
+    if (!wordmark) return;
+    const update = () => {
+      const box = document.querySelector<HTMLElement>('[data-section="work"] .work-box');
+      if (!box) { wordmark.style.color = 'var(--color-text)'; return; }
+      const nf = wordmark.getBoundingClientRect();
+      const r  = box.getBoundingClientRect();
+      const LEAD = 48;
+      const onDark =
+        r.top    <= nf.bottom + LEAD &&
+        r.bottom >= nf.top    - LEAD &&
+        r.left   <= nf.right  + LEAD &&
+        r.right  >= nf.left   - LEAD;
+      wordmark.style.color = onDark ? '#EDEAE3' : 'var(--color-text)';
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   // Collapsing wordmark on scroll
   useEffect(() => {
@@ -22,7 +49,7 @@ export default function Nav() {
     if (!logoOah || !logoRank) return;
 
     const updateLogo = () => {
-      const progress = Math.max(0, Math.min(1, window.scrollY / (window.innerHeight * 0.25)));
+      const progress = Math.max(0, Math.min(1, window.scrollY / (window.innerHeight * 0.05)));
       const collapsed = progress > 0.5;
 
       logoOah.style.maxWidth  = collapsed ? '0' : '3em';
@@ -60,6 +87,7 @@ export default function Nav() {
     <>
       {/* Collapsing wordmark — fixed top-left */}
       <a
+        ref={wordmarkRef}
         href="/"
         aria-label="Noah Frank — back to top"
         className="select-none no-underline flex items-center leading-none"
@@ -67,6 +95,7 @@ export default function Nav() {
           position: 'fixed', top: 24, left: 28, zIndex: 51,
           fontSize: 20, fontWeight: 700, fontStyle: 'italic',
           letterSpacing: '-0.03em', color: 'var(--color-text)', whiteSpace: 'nowrap',
+          transition: 'color 0.25s ease',
         }}
       >
         <span
@@ -96,6 +125,7 @@ export default function Nav() {
             <a href="/about"      className="nav-link">About</a>
             <a href="/experience" className="nav-link">Experience</a>
             <a href="/contact"    className="nav-link">Contact</a>
+            <a href="/ask"        className="ask-nav-btn ml-2">Ring the concierge</a>
           </nav>
           <button
             onClick={() => setMenuOpen(v => !v)}
@@ -126,24 +156,40 @@ export default function Nav() {
         <a href="/about"      className="mobile-nav-link" onClick={() => setMenuOpen(false)}>About</a>
         <a href="/experience" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Experience</a>
         <a href="/contact"    className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Contact</a>
+        <a href="/ask"        className="mobile-ask-link" onClick={() => setMenuOpen(false)}>Ring the concierge</a>
       </div>
 
       <style>{`
         .nav-link {
           font-size: 13px;
           font-weight: 500;
-          color: #F0EBE3;
+          color: var(--color-text-secondary);
           text-decoration: none;
           letter-spacing: 0.01em;
           padding: 7px 14px;
           border-radius: 6px;
-          background: #2C2C2C;
-          transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+          background: transparent;
+          transition: background 0.18s ease, color 0.18s ease;
         }
         .nav-link:hover {
-          background: #3e3e3e;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(44,44,44,0.18);
+          background: rgba(26, 22, 20, 0.07);
+          color: var(--color-text);
+        }
+        .ask-nav-btn {
+          font-size: 13px;
+          font-weight: 600;
+          color: #F0EBE3;
+          text-decoration: none;
+          letter-spacing: 0.01em;
+          padding: 7px 16px;
+          border-radius: 6px;
+          background: #1A1614;
+          transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .ask-nav-btn:hover {
+          background: #2C2C2C;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 14px rgba(26, 22, 20, 0.25);
         }
         .mobile-nav-link {
           font-size: 32px;
@@ -155,6 +201,16 @@ export default function Nav() {
           transition: color 0.18s ease;
         }
         .mobile-nav-link:hover { color: var(--color-accent); }
+        .mobile-ask-link {
+          font-size: 32px;
+          font-weight: 700;
+          font-style: italic;
+          letter-spacing: -0.03em;
+          color: var(--color-text);
+          text-decoration: none;
+          transition: color 0.18s ease;
+        }
+        .mobile-ask-link:hover { color: var(--color-accent); }
       `}</style>
     </>
   );

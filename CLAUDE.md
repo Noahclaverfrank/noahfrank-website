@@ -10,9 +10,12 @@ Emotional goal: visitor leaves feeling impressed, curious, and trusting — simu
 Editorial premium. References: Anthropic, OpenAI, Apple (restraint, whitespace, typographic confidence).
 Light mode only. Warm cream (#FAF8F5), deep warm-black (#1A1614), terracotta accent (#C8522A) sparingly.
 
-**Typography pairing:**
-- Display: **Cormorant Garamond** — elegant serif, editorial, luxury. For name and section headings.
-- Body/UI: **Geist** (self-hosted variable font) — clean, modern. For copy, nav, labels.
+**Typography (single-font rule, locked 2026-04-22):**
+- **Geist only.** One font across the entire site — display, body, nav, labels, project names, everything.
+- Self-hosted variable font at `/fonts/GeistVariableVF.woff2`. Weight range 100–900.
+- Weight is how you create hierarchy: 700–800 for display/names, 500–600 for labels, 400 for body.
+- No serif. No font pairings. No Cormorant Garamond, no Georgia. If an existing component still uses a serif font family, update it to Geist.
+- Italic is fine for the wordmark logo; avoid italic elsewhere.
 
 ### Anti-patterns (never do)
 - Student portfolio aesthetic — cheap, template-like

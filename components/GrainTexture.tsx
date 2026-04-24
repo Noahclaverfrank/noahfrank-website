@@ -11,19 +11,27 @@ export default function GrainTexture() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const W = 256, H = 256;
-    canvas.width = W;
-    canvas.height = H;
+    const generate = () => {
+      const W = Math.ceil(window.innerWidth);
+      const H = Math.ceil(window.innerHeight);
+      canvas.width = W;
+      canvas.height = H;
 
-    const imageData = ctx.createImageData(W, H);
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const v = Math.random() * 255;
-      imageData.data[i] = v;
-      imageData.data[i+1] = v;
-      imageData.data[i+2] = v;
-      imageData.data[i+3] = 255;
-    }
-    ctx.putImageData(imageData, 0, 0);
+      const imageData = ctx.createImageData(W, H);
+      const d = imageData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const v = Math.random() * 70;
+        d[i]   = Math.min(255, v + 10);  // R warm
+        d[i+1] = Math.min(255, v + 5);   // G neutral
+        d[i+2] = Math.max(0,   v - 8);   // B cool down
+        d[i+3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+    };
+
+    generate();
+    window.addEventListener('resize', generate);
+    return () => window.removeEventListener('resize', generate);
   }, []);
 
   return (
@@ -37,8 +45,8 @@ export default function GrainTexture() {
         height: '100%',
         pointerEvents: 'none',
         zIndex: 9999,
-        opacity: 0.035,
-        mixBlendMode: 'multiply',
+        opacity: 0.06,
+        mixBlendMode: 'soft-light',
       }}
     />
   );

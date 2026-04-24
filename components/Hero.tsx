@@ -7,19 +7,37 @@ export default function Hero() {
   const bgCanvasRef   = useRef<HTMLCanvasElement>(null);
   const meshCanvasRef = useRef<HTMLCanvasElement>(null);
   const nameRef       = useRef<HTMLHeadingElement>(null);
-  const panelRef      = useRef<HTMLDivElement>(null);
 
-  // ── Scroll fade-out ───────────────────────────────────────────────────
+  // ── Scroll fade-out + translate ──────────────────────────────────────
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
     const heroEl = heroRef.current;
     if (!heroEl) return;
+
+    // Ease the fade so the hero dissolves gradually as it scrolls up and
+    // the work section rises into view from below. No pinning — the hero
+    // leaves the viewport naturally, and the box enters from the bottom.
+    const easeInOut = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    let ticking = false;
+    const update = () => {
+      const vh = window.innerHeight;
+      const raw = Math.min(Math.max(window.scrollY / vh, 0), 1);
+      const p = easeInOut(raw);
+      heroEl.style.opacity       = String(1 - p);
+      heroEl.style.pointerEvents = p >= 0.98 ? 'none' : '';
+      ticking = false;
+    };
     const onScroll = () => {
-      const p = Math.min(window.scrollY / (window.innerHeight * 0.55), 1);
-      heroEl.style.opacity = String(Math.max(0, 1 - p));
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    update();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
@@ -39,6 +57,13 @@ export default function Hero() {
     const ro = new ResizeObserver(resize);
     ro.observe(bgCanvas);
 
+    let visible = true;
+    const io = new IntersectionObserver(
+      (entries) => { visible = entries[0]?.isIntersecting ?? true; },
+      { threshold: 0 }
+    );
+    if (heroRef.current) io.observe(heroRef.current);
+
     type OrbCfg = { cx: number; cy: number; r: number; c: string; a: number; fx: number; fy: number; px: number; py: number; ax: number; ay: number };
     const orbs: OrbCfg[] = [
       { cx: 0.75, cy: 0.25, r: 0.38, c: '140,110,50', a: 0.18, fx: 0.12, fy: 0.09, px: 0.0, py: 1.2, ax: 0.12, ay: 0.09 },
@@ -50,6 +75,7 @@ export default function Hero() {
     let t = 0;
     let rafId: number;
     const draw = () => {
+      if (!visible) { rafId = requestAnimationFrame(draw); return; }
       ctx.clearRect(0, 0, W, H);
       const S = Math.min(W, H);
       for (const o of orbs) {
@@ -67,7 +93,7 @@ export default function Hero() {
       rafId = requestAnimationFrame(draw);
     };
     draw();
-    return () => { cancelAnimationFrame(rafId); ro.disconnect(); };
+    return () => { cancelAnimationFrame(rafId); ro.disconnect(); io.disconnect(); };
   }, []);
 
   // ── Network mesh with traveling dot ──────────────────────────────────
@@ -85,6 +111,13 @@ export default function Hero() {
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(meshCanvas);
+
+    let visible = true;
+    const io = new IntersectionObserver(
+      (entries) => { visible = entries[0]?.isIntersecting ?? true; },
+      { threshold: 0 }
+    );
+    if (heroRef.current) io.observe(heroRef.current);
 
     const COLS = 10, ROWS = 7;
     const ERX = 0.44, ERY = 0.34;
@@ -112,7 +145,7 @@ export default function Hero() {
       const dy = (ny - ECY) / (ERY * 1.35);
       return Math.sqrt(dx * dx + dy * dy);
     };
-    const inHeadlineZone = (nx: number, ny: number) => nx < 0.36 && ny > 0.50;
+    const inHeadlineZone = (nx: number, ny: number) => nx < 0.42 && ny > 0.28;
     const isInterior = (idx: number, pts: Pt[]) => {
       const nx = pts[idx].x / W, ny = pts[idx].y / H;
       return ellipseDist(nx, ny) < 0.75 && !inHeadlineZone(nx, ny);
@@ -153,6 +186,7 @@ export default function Hero() {
 
     const drawMesh = () => {
       if (W === 0 || H === 0) { rafId = requestAnimationFrame(drawMesh); return; }
+      if (!visible) { rafId = requestAnimationFrame(drawMesh); return; }
       ctx.clearRect(0, 0, W, H);
 
       const pts: Pt[] = nodes.map(n => ({
@@ -160,7 +194,6 @@ export default function Hero() {
         y: (n.by + Math.cos(t * n.fy + n.py) * n.ay) * H,
       }));
 
-      // Edges
       for (let i = 0; i < pts.length; i++) {
         for (let j = i + 1; j < pts.length; j++) {
           const dx = (pts[i].x - pts[j].x) / W;
@@ -172,22 +205,20 @@ export default function Hero() {
           if (inHeadlineZone(niX, niY) || inHeadlineZone(njX, njY)) continue;
           const edgeFade = Math.max(0, 1 - Math.max(ellipseDist(niX, niY), ellipseDist(njX, njY)));
           const weight = 0.4 + ((i * 7 + j * 13) % 10) / 10 * 0.6;
-          const alpha = weight * 0.55 * (1 - dist / CONNECT_DIST) * edgeFade;
+          const alpha = weight * 0.85 * (1 - dist / CONNECT_DIST) * edgeFade;
           ctx.lineWidth = 0.3 + weight * 2.0;
           ctx.strokeStyle = `rgba(55,42,28,${alpha.toFixed(3)})`;
           ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
         }
       }
 
-      // Nodes
       for (let i = 0; i < pts.length; i++) {
         if (inHeadlineZone(pts[i].x / W, pts[i].y / H)) continue;
         const fade = Math.max(0, 1 - ellipseDist(pts[i].x / W, pts[i].y / H));
-        ctx.fillStyle = `rgba(55,42,28,${(0.40 * fade).toFixed(3)})`;
+        ctx.fillStyle = `rgba(55,42,28,${(0.65 * fade).toFixed(3)})`;
         ctx.beginPath(); ctx.arc(pts[i].x, pts[i].y, 2.2, 0, Math.PI * 2); ctx.fill();
       }
 
-      // Traveler
       travT += TRAV_SPEED;
       if (travT >= 1) {
         const prev = travFrom;
@@ -225,10 +256,10 @@ export default function Hero() {
       rafId = requestAnimationFrame(drawMesh);
     };
     drawMesh();
-    return () => { cancelAnimationFrame(rafId); ro.disconnect(); };
+    return () => { cancelAnimationFrame(rafId); ro.disconnect(); io.disconnect(); };
   }, []);
 
-  // ── Letter scramble (per-span, word-stagger) ──────────────────────────
+  // ── Letter scramble ───────────────────────────────────────────────────
   useEffect(() => {
     const nameEl = nameRef.current;
     if (!nameEl) return;
@@ -236,7 +267,7 @@ export default function Hero() {
 
     const words = nameEl.querySelectorAll<HTMLElement>('.hero-word');
     words.forEach(word => {
-      const text = word.textContent ?? '';
+      const text = word.dataset.text ?? word.textContent ?? '';
       word.textContent = '';
       text.split('').forEach((char, i) => {
         const span = document.createElement('span');
@@ -304,53 +335,18 @@ export default function Hero() {
     };
   }, []);
 
-  // ── GSAP scroll-expanding panel ───────────────────────────────────────
-  useEffect(() => {
-    const panel = panelRef.current;
-    if (!panel) return;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) { panel.style.maxWidth = '100%'; return; }
-    (async () => {
-      try {
-        const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-          import('gsap'),
-          import('gsap/ScrollTrigger'),
-        ]);
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.to(panel, {
-          maxWidth: '100%',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '#hero-expand-wrapper',
-            start: 'top 15%',
-            end: 'top -40%',
-            scrub: 1,
-          },
-        });
-      } catch { /* non-critical */ }
-    })();
-  }, []);
-
   return (
     <>
+      {/* ── Hero ── */}
       <section
         ref={heroRef}
         id="hero"
         data-section="hero"
-        className="relative flex min-h-[100svh] flex-col justify-end [overflow:clip]"
+        className="relative flex h-[100svh] flex-col justify-end [overflow:clip]"
         style={{ background: '#EDEAE3', paddingBottom: 96 }}
       >
-        <canvas
-          ref={bgCanvasRef}
-          aria-hidden={true}
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ opacity: 0.55 }}
-        />
-        <canvas
-          ref={meshCanvasRef}
-          aria-hidden={true}
-          className="absolute inset-0 w-full h-full pointer-events-none"
-        />
+        <canvas ref={bgCanvasRef} aria-hidden className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.55 }} />
+        <canvas ref={meshCanvasRef} aria-hidden className="absolute inset-0 w-full h-full pointer-events-none" />
 
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 md:px-10">
           <p
@@ -359,86 +355,21 @@ export default function Hero() {
           >
             Zürich · Student · Builder
           </p>
-
           <h1
             id="hero-headline"
             ref={nameRef}
             className="hero-name font-bold leading-[0.92] tracking-tight text-text"
             style={{ fontSize: 'clamp(72px, 11.5vw, 144px)', marginBottom: 'clamp(40px, 5vw, 64px)' }}
           >
-            <span className="hero-word block">Noah</span>
-            <span className="hero-word block">Frank</span>
+            <span className="hero-word block" data-text="Noah">Noah</span>
+            <span className="hero-word block" data-text="Frank">Frank</span>
           </h1>
-
-          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-end">
-            <div className="hero-right md:text-right" style={{ maxWidth: 460 }}>
-              <p className="text-[16px] leading-[1.7] text-text-secondary" style={{ marginBottom: 28 }}>
-                I study business at UZH and spend the rest of my time
-                building things, experimenting, and figuring out how stuff works.
-                Currently at Alerion Consult.
-              </p>
-              <div className="flex flex-wrap items-center gap-4 md:justify-end">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 rounded-sm bg-text px-5 py-[13px] text-[13px] font-semibold text-background transition-colors duration-200 hover:bg-accent"
-                >
-                  Say hello
-                </a>
-                <a
-                  href="#experience"
-                  className="text-[13px] font-medium text-text-secondary transition-colors duration-200 hover:text-text"
-                >
-                  What I&apos;ve been up to →
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Scroll-expanding dark panel */}
-      <section
-        id="hero-expand-wrapper"
-        className="relative w-full"
-        style={{ padding: '0 clamp(16px, 2.5vw, 40px) clamp(96px, 12vw, 160px)', background: '#EDEAE3' }}
-      >
-        <div
-          ref={panelRef}
-          id="hero-expand-panel"
-          className="relative mx-auto overflow-hidden"
-          style={{
-            maxWidth: 1200,
-            borderRadius: 32,
-            background: '#2C2C2C',
-            color: '#F0EBE3',
-            padding: 'clamp(48px, 6vw, 80px) clamp(32px, 5vw, 72px)',
-            willChange: 'max-width',
-          }}
-        >
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] opacity-50" style={{ marginBottom: 20 }}>
-            Fast Facts
-          </p>
-          <div className="grid gap-8 sm:grid-cols-3">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-40" style={{ marginBottom: 6 }}>Based in</p>
-              <p className="text-[22px] font-bold leading-tight">Zürich</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-40" style={{ marginBottom: 6 }}>Studying</p>
-              <p className="text-[22px] font-bold leading-tight">Business · UZH</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-40" style={{ marginBottom: 6 }}>Currently at</p>
-              <p className="text-[22px] font-bold leading-tight">Alerion Consult</p>
-            </div>
-          </div>
         </div>
       </section>
 
       <style>{`
         @media (prefers-reduced-motion: no-preference) {
           .hero-eyebrow { animation: fadeUp 0.5s ease-out 0.6s both; }
-          .hero-right   { animation: fadeUp 0.5s ease-out 0.7s both; }
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(20px); }

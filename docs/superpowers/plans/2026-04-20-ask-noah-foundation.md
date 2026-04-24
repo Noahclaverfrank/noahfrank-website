@@ -57,8 +57,10 @@ Run:
 ```bash
 cd /Users/noahfrank/noahfrank-website
 npm install @anthropic-ai/sdk@^0.40.0
-npm install -D @netlify/functions@^2.8.0 netlify-cli@^18
+npm install -D @netlify/functions@^2.8.0 netlify-cli@^25.0.1
 ```
+
+**Why `netlify-cli@^25`:** The older `^18` line fails on Node 20+ (transitive `buffer-equal-constant-time` relies on the removed `SlowBuffer.prototype`). Version 25 declares `engines.node >=20.12.2` and runs clean on current Node.
 
 Expected: `package.json` now lists `@anthropic-ai/sdk` under `dependencies`, `@netlify/functions` and `netlify-cli` under `devDependencies`. No install errors.
 

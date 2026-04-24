@@ -2,31 +2,24 @@ import Nav from '@/components/Nav';
 import Hero from '@/components/Hero';
 import LenisProvider from '@/components/LenisProvider';
 import GrainTexture from '@/components/GrainTexture';
+import Footer from '@/components/Footer';
+import WorkSection from '@/components/WorkSection';
+import ExperienceSection from '@/components/ExperienceSection';
+import NowSection from '@/components/NowSection';
 
 export default function Home() {
   return (
     <>
-<LenisProvider />
+      <LenisProvider />
       <Nav />
+      <GrainTexture />
       <main id="top">
         <Hero />
-
-        {/* Placeholders — replaced in future phases */}
-        <section id="about" data-section="about"
-          className="flex min-h-[60svh] items-center justify-center border-t border-border">
-          <p className="text-sm text-text-tertiary">About — coming soon</p>
-        </section>
-
-        <section id="experience" data-section="experience"
-          className="flex min-h-[60svh] items-center justify-center border-t border-border">
-          <p className="text-sm text-text-tertiary">Experience — coming soon</p>
-        </section>
-
-        <section id="contact" data-section="contact"
-          className="flex min-h-[60svh] items-center justify-center border-t border-border">
-          <p className="text-sm text-text-tertiary">Contact — coming soon</p>
-        </section>
+        <WorkSection />
+        <ExperienceSection />
+        <NowSection />
       </main>
+      <Footer />
     </>
   );
 }
