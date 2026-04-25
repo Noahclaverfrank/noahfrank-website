@@ -5,7 +5,7 @@ import GrainTexture from '@/components/GrainTexture';
 import LenisProvider from '@/components/LenisProvider';
 
 export const metadata: Metadata = {
-  title: 'TAF 180 — Case study · Noah Frank',
+  title: 'TAF 180 — Case study',
   description:
     'A desktop invoicing tool for an ergotherapy practice in Zürich. Swiss QR-Bill, photo-to-invoice via the Anthropic API, built for one practice to start.',
 };

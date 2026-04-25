@@ -5,7 +5,7 @@ import GrainTexture from '@/components/GrainTexture';
 import LenisProvider from '@/components/LenisProvider';
 
 export const metadata: Metadata = {
-  title: 'noahfrank.com — Case study · Noah Frank',
+  title: 'noahfrank.com — Case study',
   description:
     'A site built in public to learn modern frontend, AI integration, and editorial design — and to introduce me more honestly than a LinkedIn profile.',
 };

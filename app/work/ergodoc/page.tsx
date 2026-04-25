@@ -5,7 +5,7 @@ import GrainTexture from '@/components/GrainTexture';
 import LenisProvider from '@/components/LenisProvider';
 
 export const metadata: Metadata = {
-  title: 'ErgoDoc — Case study · Noah Frank',
+  title: 'ErgoDoc — Case study',
   description:
     'Desktop documentation for occupational therapy teams in Germany. Local-first, Claude API integration, built for practice teams.',
 };
