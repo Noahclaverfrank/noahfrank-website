@@ -122,10 +122,10 @@ export default function Nav() {
       >
         <div className="flex items-center gap-1 pr-6 md:pr-10">
           <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1">
-            <a href="/about"      className="nav-link">About</a>
-            <a href="/experience" className="nav-link">Experience</a>
-            <a href="/contact"    className="nav-link">Contact</a>
-            <a href="/ask"        className="ask-nav-btn ml-2">Ring the concierge</a>
+            <a href="/#work"                     className="nav-link">Work</a>
+            <a href="/#experience"               className="nav-link">Experience</a>
+            <a href="mailto:noahfrank361@gmail.com" className="nav-link">Contact</a>
+            <a href="/ask"                       className="ask-nav-btn ml-2">Ring the concierge</a>
           </nav>
           <button
             onClick={() => setMenuOpen(v => !v)}
@@ -153,10 +153,10 @@ export default function Nav() {
         }}
         aria-hidden={!menuOpen}
       >
-        <a href="/about"      className="mobile-nav-link" onClick={() => setMenuOpen(false)}>About</a>
-        <a href="/experience" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Experience</a>
-        <a href="/contact"    className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Contact</a>
-        <a href="/ask"        className="mobile-ask-link" onClick={() => setMenuOpen(false)}>Ring the concierge</a>
+        <a href="/#work"                        className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Work</a>
+        <a href="/#experience"                  className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Experience</a>
+        <a href="mailto:noahfrank361@gmail.com" className="mobile-nav-link" onClick={() => setMenuOpen(false)}>Contact</a>
+        <a href="/ask"                          className="mobile-ask-link" onClick={() => setMenuOpen(false)}>Ring the concierge</a>
       </div>
 
       <style>{`
