@@ -4,7 +4,7 @@ import './globals.css';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://noahfrank.com';
 const DESCRIPTION =
-  'Personal site of Noah Frank. Zurich. UZH business student, working student in strategy consulting, side projects on this page.';
+  "Noah Frank's site. Zurich. Studies at UZH, works at Alerion Consult, builds software on the side.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

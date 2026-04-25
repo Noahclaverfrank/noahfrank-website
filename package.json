@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.40.1",
-    "@next/font": "^14.2.15",
+    "@netlify/blobs": "^8.1.0",
     "gsap": "^3.14.2",
     "lenis": "^1.3.21",
     "next": "16.2.2",

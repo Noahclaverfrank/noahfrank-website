@@ -1,11 +1,17 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { Context } from '@netlify/functions';
+import { getStore } from '@netlify/blobs';
 import { buildSystem } from './_lib/system-prompt';
 
 const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 1024;
 const MAX_USER_CHARS = 300;    // spec §8 item 1
 const MAX_TURNS = 12;           // spec §8 item 2
+
+// Daily rate limits, reset implicitly at UTC midnight (key is date-prefixed).
+// Per-IP cap blunts a single bad actor; global cap caps the Anthropic spend.
+const PER_IP_DAILY = 10;
+const GLOBAL_DAILY = 50;
 
 type InMsg = { role: 'user' | 'assistant'; content: string };
 
@@ -72,6 +78,40 @@ export default async (req: Request, _context: Context): Promise<Response> => {
   const last = cleaned[cleaned.length - 1];
   if (last.content.length > MAX_USER_CHARS) {
     return jsonError(400, `Message too long (max ${MAX_USER_CHARS} chars).`);
+  }
+
+  // Rate limit: per-IP and global daily caps. Keys are date-prefixed so the
+  // counter resets at UTC midnight without an explicit cleanup job. Read +
+  // increment is non-atomic, but at this volume (50/day) the race is benign.
+  const ip =
+    req.headers.get('x-nf-client-connection-ip') ??
+    (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() ??
+    'unknown';
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  try {
+    const store = getStore('rate-limit');
+    const ipKey = `${today}:ip:${ip}`;
+    const globalKey = `${today}:global`;
+    const [ipCountRaw, globalCountRaw] = await Promise.all([
+      store.get(ipKey),
+      store.get(globalKey),
+    ]);
+    const ipCount = parseInt(ipCountRaw ?? '0', 10) || 0;
+    const globalCount = parseInt(globalCountRaw ?? '0', 10) || 0;
+    if (globalCount >= GLOBAL_DAILY) {
+      return jsonError(503, 'Daily message budget reached. Try again tomorrow or email Noah.');
+    }
+    if (ipCount >= PER_IP_DAILY) {
+      return jsonError(429, 'You have reached today’s message limit. Try again tomorrow.');
+    }
+    await Promise.all([
+      store.set(ipKey, String(ipCount + 1)),
+      store.set(globalKey, String(globalCount + 1)),
+    ]);
+  } catch (err) {
+    // Blob store unavailable (e.g. local dev without netlify dev) — log and
+    // fail open. The model-side caps still bound spend.
+    console.warn('[ask] rate-limit store unavailable, failing open:', err);
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
