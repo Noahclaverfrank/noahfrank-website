@@ -178,15 +178,13 @@ export default function TAF180CaseStudy() {
 
         <ApproachBlock
           num="03"
-          title="Built for one practice — honestly"
+          title="Local-first, ready to run"
           last
         >
-          Today TAF 180 has one user: my father. He uses it lightly. That&apos;s the truth and I&apos;d
-          rather lead with it than dress it up. The point of shipping it wasn&apos;t volume — it
-          was learning what a real billing workflow looks like before pretending to know what
-          ten of them need. The current build is Tauri v2; the API key, the file vault, and
-          auto-updates live on the Mac, ready for whichever practice decides to lean on it
-          next.
+          The Tauri v2 build keeps the practice&apos;s data on the practice&apos;s Mac — API key in
+          the OS keychain, invoice vault on disk, auto-updates handled natively. No backend
+          to maintain, no cloud sync to debug, no DPA to negotiate. Open the app, click
+          twice, print. That&apos;s the job.
         </ApproachBlock>
 
         <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>

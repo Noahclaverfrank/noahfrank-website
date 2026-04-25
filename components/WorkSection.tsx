@@ -60,11 +60,11 @@ export const WORK: WorkItem[] = [
     year: '2026',
     image: '/work/taf180-home.png',
     theme: 'light',
-    lede: 'A desktop invoicing tool for my father’s ergotherapy practice in Zürich — Swiss QR-Bill, photo-to-invoice, built for one practice to start.',
+    lede: 'A desktop invoicing tool for an ergotherapy practice in Zürich — Swiss QR-Bill, photo-to-invoice, local-first by design.',
     bullets: [
       'Two paths in: structured form or photo recognition',
       'Swiss QR-Bill to SPS 2022 spec',
-      'Single user today — honestly framed',
+      'Local-first — keys, files, and updates stay on the Mac',
     ],
     cta: 'Read the case study →',
   },
