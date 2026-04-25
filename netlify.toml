@@ -5,9 +5,20 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options        = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy        = "strict-origin-when-cross-origin"
+    X-Frame-Options          = "DENY"
+    X-Content-Type-Options   = "nosniff"
+    Referrer-Policy          = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Permissions-Policy       = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+    # CSP notes:
+    # - 'unsafe-inline' on style + script: site uses inline <style> blocks and
+    #   Next.js static export injects an inline bootstrap script; static export
+    #   cannot deliver per-request nonces.
+    # - connect-src 'self': covers POST to /.netlify/functions/ask (same origin).
+    # - font-src 'self': Geist is self-hosted at /fonts/.
+    # - img-src 'self' data:: data: covers any inlined SVG/PNG.
+    # - frame-ancestors 'none' mirrors X-Frame-Options DENY.
+    Content-Security-Policy  = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 
 [[headers]]
   for = "/fonts/*"
