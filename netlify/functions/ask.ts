@@ -22,10 +22,21 @@ export default async (req: Request, _context: Context): Promise<Response> => {
   }
 
   // Same-origin guard (spec §13). In dev (netlify dev) origin may be absent.
+  // Parse the Origin header as a URL and compare hostnames exactly so an
+  // attacker can't bypass with e.g. https://evil-example.com when host is
+  // example.com (a naive endsWith would have matched).
   const origin = req.headers.get('origin');
   const host = req.headers.get('host');
-  if (origin && host && !origin.endsWith(host)) {
-    return jsonError(403, 'Forbidden');
+  if (origin && host) {
+    let originHost: string;
+    try {
+      originHost = new URL(origin).host;
+    } catch {
+      return jsonError(403, 'Forbidden');
+    }
+    if (originHost !== host) {
+      return jsonError(403, 'Forbidden');
+    }
   }
 
   let body: unknown;
