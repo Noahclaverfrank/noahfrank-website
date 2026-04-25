@@ -76,7 +76,7 @@ export default function TAF180CaseStudy() {
               lineHeight: 1.55, color: SECONDARY,
               maxWidth: '46ch', margin: 0,
             }}>
-              A desktop invoicing tool I built for my father&apos;s ergotherapy practice in Zürich.
+              A desktop invoicing tool for an ergotherapy practice in Zürich.
             </p>
             <div aria-hidden style={{
               width: 56, height: 2, background: ACCENT,
@@ -107,8 +107,8 @@ export default function TAF180CaseStudy() {
             </p>
             <p style={{ fontSize: 'clamp(15px, 1.25vw, 17px)', lineHeight: 1.75, color: SECONDARY, margin: 0 }}>
               Existing tools either cost more than a small practice can justify or treat Swiss
-              QR-Bill (SPS 2022) as an afterthought. I wanted something my father could open,
-              click twice, and be done with.
+              QR-Bill (SPS 2022) as an afterthought. I wanted something you could open, click
+              twice, and be done with.
             </p>
           </section>
 
