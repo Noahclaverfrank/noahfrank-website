@@ -8,21 +8,21 @@ const TIMELINE = [
     location: 'ZÜRICH',
     org: 'Alerion Consult',
     role: 'Working Student · Strategy & Transformation',
-    desc: 'Primary analyst on a live corporate strategy project for a 500+ employee client. Building competitor screens and KPI snapshots, then translating the findings into materials that land in front of leadership. First time being the one person responsible for a real client deliverable.',
+    desc: "Working student on the strategy team. I'm the analyst on a live engagement for a 500+ employee client — competitor screens, KPI work, the pages that end up in the leadership pack. Smaller team than KPMG, less safety net, more of the slide is mine before anyone else looks at it.",
   },
   {
     period: 'JUN — SEP 2025',
     location: 'BERLIN',
     org: 'KPMG',
     role: 'Intern · Tech Strategy & Operations',
-    desc: "Spent the summer inside KPMG's consulting practice. Wrote the solution narratives that shaped how clients understood their options, ran vendor assessments for IT outsourcing decisions, and supported workshops from agenda to follow-up. Learned what client-ready actually means when it matters.",
+    desc: 'Tech Strategy & Operations intern in Berlin, summer 2025. Vendor assessments for IT outsourcing decisions, solution narratives, workshop prep and follow-up.',
   },
   {
     period: '2021 — 2024',
     location: 'GERMANY',
     org: 'Bundeswehr',
     role: 'Lieutenant · German Armed Forces',
-    desc: 'Three years as an officer. Led a 30-person platoon, ran a 12-person squad, was selected for the German Commando Course in survival and evasion. More hours making decisions under pressure before 23 than most people accumulate in a decade.',
+    desc: 'Lieutenant in the German Armed Forces, 2021–2024. Platoon of 30, squad of 12, did the German Commando Course (survival, evasion, small-unit tactics). The first role where the people under me noticed when I hadn’t slept or hadn’t made up my mind.',
   },
 ];
 

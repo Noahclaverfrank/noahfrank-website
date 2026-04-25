@@ -7,18 +7,18 @@ const UPDATED = 'Updated April 2026';
 const ITEMS = [
   {
     label: 'Reading',
-    title: 'TBD',
-    note:  'TBD — a sentence on why this book has my attention.',
+    title: 'Why Nations Fail — Daron Acemoglu & James Robinson',
+    note:  "Institutions over geography, culture, or great men. I'm reading it because the question — why some countries compound and others don't — is the same question I want to answer about companies.",
   },
   {
     label: 'Listening',
-    title: 'TBD',
-    note:  'TBD — a sentence on what this is doing for me right now.',
+    title: 'Doppelgänger Tech Talk',
+    note:  'Pip & Glöckler dissecting public tech companies in German. The format that taught me to read an earnings release without falling for the press headline.',
   },
   {
     label: 'Learning',
-    title: 'TBD',
-    note:  'TBD — a sentence on what I am working out here.',
+    title: 'Math and statistics',
+    note:  'Working through probability, linear algebra, and inferential statistics. Proofs, not cookbook chapters.',
   },
 ];
 

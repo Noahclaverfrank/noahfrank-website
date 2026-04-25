@@ -1,12 +1,23 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Hero() {
   const heroRef       = useRef<HTMLElement>(null);
   const bgCanvasRef   = useRef<HTMLCanvasElement>(null);
   const meshCanvasRef = useRef<HTMLCanvasElement>(null);
   const nameRef       = useRef<HTMLHeadingElement>(null);
+  const [time, setTime] = useState<string>('');
+
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Zurich',
+    });
+    const update = () => setTime(fmt.format(new Date()));
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   // ── Scroll fade-out + translate ──────────────────────────────────────
   useEffect(() => {
@@ -353,7 +364,7 @@ export default function Hero() {
             className="hero-eyebrow text-[11px] font-semibold uppercase tracking-[0.22em] text-text-secondary"
             style={{ marginBottom: 'clamp(20px, 2.5vw, 32px)' }}
           >
-            Zürich · Student · Builder
+            Zürich{time && <> · <span suppressHydrationWarning>{time}</span></>}
           </p>
           <h1
             id="hero-headline"
