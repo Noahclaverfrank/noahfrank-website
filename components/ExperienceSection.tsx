@@ -34,8 +34,8 @@ export default function ExperienceSection() {
     if (!section) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const parts = section.querySelectorAll<HTMLElement>('[data-exp-part]');
     if (prefersReduced) {
+      const parts = section.querySelectorAll<HTMLElement>('[data-exp-part]');
       parts.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
       return;
     }

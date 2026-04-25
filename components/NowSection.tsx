@@ -30,8 +30,8 @@ export default function NowSection() {
     if (!section) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const parts = section.querySelectorAll<HTMLElement>('[data-now-part]');
     if (prefersReduced) {
+      const parts = section.querySelectorAll<HTMLElement>('[data-now-part]');
       parts.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
       return;
     }
